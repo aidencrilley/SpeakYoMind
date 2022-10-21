@@ -26,20 +26,56 @@ const user = auth.currentUser;
 let speechesRef = rtdb.ref(db, "/speeches");
 let speakersRef = rtdb.ref(db, "/speakers");
 
-let toggleClap = (speechRef, uid)=>{
-  speechRef.transaction((sObj) => {
+function renderLogin() {
+  $("#gSignOut").hide();
+  $("#speechfeed").hide();
+  $("#gSignIn").show();
+  $("#sendspeech").hide();
+  $("#currSignedIn").hide();
+}
+
+function renderPage(loggedIn) {
+  let myUid = loggedIn.uid;
+
+  $("#speechfeed").show();
+  $("#gSignIn").hide();
+  $("#sendspeech").show();
+
+  $("#topbar").prepend(`<div id="currSignedIn" class="p-2"><p>Signed in as <img src=${loggedIn.photoURL} style="width:30px;height:30px;"></div>`);
+
+  sendSpeech(loggedIn);
+
+  rtdb.onChildAdded(speechesRef, (ss) => {
+    let sObj = ss.val();
+    renderSpeech(sObj, ss.key);
+    $(".clap-button").off("click");
+    $(".clap-button").on("click", (evt) => {
+      let clickedSpeech = $(evt.currentTarget).attr("data-speechid");
+      let clapsRef = rtdb.ref(db, "/speeches/"+clickedSpeech+"/data");
+      toggleClap(clapsRef, myUid);
+    });
+  });
+}
+
+function toggleClap(speechRef, uid) {
+  // speechRef = /speeches/uuid/data
+  // This allows us to access claps and clapusers as sObj.claps and sObj.clapusers
+  rtdb.runTransaction(speechRef, (sObj) => {
     if (!sObj) {
-      sObj = {claps: 0};
+      sObj = {
+        claps: 0,
+        clapusers: {},
+      };
     }
-    if (sObj.claps && sObj.likes_by_user[uid]) {
+    if (sObj.claps && sObj.clapusers[uid]) {
       sObj.claps--;
-      sObj.claps_by_user[uid] = null;
+      sObj.clapusers[uid] = null;
     } else {
       sObj.claps++;
-      if (!sObj.claps_by_user) {
-        sObj.claps_by_user = {};
+      if (!sObj.clapusers) {
+        sObj.clapusers = {};
       }
-      sObj.claps_by_user[uid] = true;
+      sObj.clapusers[uid] = true;
     }
     return sObj;
   });
@@ -56,16 +92,17 @@ let renderSpeech = (sObj, uuid) => {
       <div class="card-body">
         <h5 class="card-title">${sObj.speaker}</h5>
         <p class="card-text">${sObj.content}</p>
-        <button class="btn btn-outline-primary btn-sm clap-button" data-speechid="${uuid}">${sObj.claps} claps</button>
+        <button class="btn btn-outline-primary btn-sm clap-button" data-speechid="${uuid}">${sObj.data.claps} claps</button>
         <p class="card-text"><small class="text-muted">Spoken at ${new Date(sObj.timestamp).toLocaleString()}</small></p>
       </div>
     </div>
   </div>
 </div>`);
-  rtbd.ref(db, "/claps").child(uuid).child("claps").on("value", (ss) => {
+  let clapRef = rtdb.ref(db,"/speeches/"+uuid+"/data/claps");
+  rtdb.onValue(clapRef, (ss) => {
     $(`.clap-button[data-speechid=${uuid}]`).html(`${ss.val() || 0} claps`);
   });
-}
+};
 
 function signInGoogle() {
   const provider = new GoogleAuthProvider();
@@ -103,8 +140,11 @@ function sendSpeech(user) {
 			speaker: user.displayName,
       photo: user.photoURL,
 			timestamp: Date.now(),
-			claps: 0,
-    }
+      data: {
+			  claps: 0,
+        clapusers: {},
+      }
+    };
 
     if (s === "") {
       alert("Enter a speech before sending!");
@@ -116,53 +156,13 @@ function sendSpeech(user) {
   });
 }
 
-/*rtdb.onChildAdded(speechesRef, (ss) => {
-	let sObj = ss.val();
-	renderSpeech(sObj);
-});*/
-
-function renderLogin() {
-  $("#gSignOut").hide();
-  $("#speechfeed").hide();
-  $("#gSignIn").show();
-  $("#sendspeech").hide();
-}
-
-function renderPage(loggedIn) {
-  let myUid = loggedIn.uid;
-
-  $("#speechfeed").show();
-  $("#gSignIn").hide();
-  $("#sendspeech").show();
-  sendSpeech(loggedIn);
-
-  rtdb.onChildAdded(speechesRef, (ss) => {
-    let sObj = ss.val();
-    renderSpeech(sObj, ss.key);
-    $(".clap-button").off("click");
-    $(".clap-button").on("click", (evt) => {
-      let clickedSpeech = $(evt.currentTarget).attr("data-speechid");
-      let clapsRef = rtdb.ref(db, "/claps").child(clickedSpeech);
-      toggleClap(clapsRef, myUid);
-    });
-  });
-}
-
 onAuthStateChanged(auth, (user) => {
 	if (user) {
 		// If there is a user, the following will happen
-    /*$("#speechfeed").show();
-    $("#gSignIn").hide();
-    $("#sendspeech").show();
-    sendSpeech(user);*/
     renderPage(user);
   }
 	else {
     // If there is no user, the speechfeed and ability to speak should be hidden
-    /*$("#gSignOut").hide();
-    $("#speechfeed").hide();
-    $("#gSignIn").show();
-    $("#sendspeech").hide();*/
     renderLogin();
 	}
 });

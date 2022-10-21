@@ -11,18 +11,14 @@
 </head>
 
 <body>
-	<div id="login">
-		<div class="d-flex flex-row justify-content-between">
-			<div class="p-2">
-				<p>Speak freely!</p>
+	<div id="login" class="p-3 mb-2 bg-primary text-dark">
+		<h1 class="text-center">Speak Yo Mind!</h1>
+		<div id="topbar" class="d-flex flex-row justify-content-between">
+			<div class="col text-center">
+				<button class="btn btn-dark btn-sm" id="gSignIn">Sign in With Google</button>
 			</div>
 			<div class="p-2">
-				<h1>Speak Yo Mind!</h1>
-
-				<button class="btn btn-outline-primary btn-sm" id="gSignIn">Sign in With Google</button>
-			</div>
-			<div class="p-2">
-				<button class="btn btn-outline-primary btn-sm" id="gSignOut">Sign Out</button>
+				<button class="btn btn-danger btn-sm" id="gSignOut">Sign Out</button>
 			</div>
 		</div>
 	</div>
@@ -30,8 +26,9 @@
 	<div id="sendspeech">
 		<div class="d-flex flex-row justify-content-center">
 			<div id="speakform">
-				<label for="exampleFormControlTextarea1">What do you want to say?</label>
-				<textarea class="form-control" id="speechcontent" rows="5" cols="40"></textarea>
+				<label for="exampleFormControlTextarea1"></label>
+				<textarea class="form-control" placeholder="What have you got to say?" id="speechcontent" rows="5"
+					cols="40"></textarea>
 			</div>
 		</div>
 		<center>

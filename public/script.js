@@ -41,7 +41,7 @@ function renderPage(loggedIn) {
   $("#gSignIn").hide();
   $("#sendspeech").show();
 
-  $("#topbar").prepend(`<div id="currSignedIn" class="p-2"><p>Signed in as <img src=${loggedIn.photoURL} style="width:30px;height:30px;"></div>`);
+  $("#topbar").prepend(`<div id="currSignedIn" class="p-2"><p>Signed in as <img src=${loggedIn.photoURL} style="width:30px;height:30px;border-radius:50%;"></div>`);
 
   sendSpeech(loggedIn);
 
@@ -147,7 +147,11 @@ function sendSpeech(user) {
     };
 
     if (s === "") {
-      alert("Enter a speech before sending!");
+      $("#sendspeech").append(`
+        <div class="alert alert-danger" role="alert">
+          Enter a speech before sending!
+        </div>
+      `);
     }
     else {
       rtdb.push(speechesRef, speech);

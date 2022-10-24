@@ -32,6 +32,7 @@ function renderLogin() {
   $("#gSignIn").show();
   $("#sendspeech").hide();
   $("#currSignedIn").hide();
+  $("#aboutsection").show();
 }
 
 function renderPage(loggedIn) {
@@ -40,8 +41,9 @@ function renderPage(loggedIn) {
   $("#speechfeed").show();
   $("#gSignIn").hide();
   $("#sendspeech").show();
+  $("#aboutsection").hide();
 
-  $("#topbar").prepend(`<div id="currSignedIn" class="p-2"><p>Signed in as <img src=${loggedIn.photoURL} style="width:30px;height:30px;border-radius:50%;"></div>`);
+  $("#topbar").prepend(`<div id="currSignedIn" class="p-2"><p style="font-family: 'Raleway', sans-serif; color: white;">Signed in as <img src=${loggedIn.photoURL} style="width:30px;height:30px;border-radius:50%;"></div>`);
 
   sendSpeech(loggedIn);
 
@@ -83,10 +85,10 @@ function toggleClap(speechRef, uid) {
 
 let renderSpeech = (sObj, uuid) => {
   $("#allspeeches").prepend(`
-  <div class="card mb-3 speech" data-uuid="${uuid}" style="max-width: 540px;">
+  <div class="card text-white bg-dark mb-3 speech" data-uuid="${uuid}" style="max-width: 540px; color=blue">
   <div class="row g-0">
     <div class="col-md-4">
-      <img src="${sObj.photo}" class="img-fluid rounded-start" alt="...">
+      <img src="${sObj.photo}" class="embed-responsive embed-responsive-16by9" alt="...">
     </div>
     <div class="col-md-8">
       <div class="card-body">
@@ -148,14 +150,17 @@ function sendSpeech(user) {
 
     if (s === "") {
       $("#sendspeech").append(`
-        <div class="alert alert-danger" role="alert">
-          Enter a speech before sending!
-        </div>
+        <center>
+          <div id="err" class="alert alert-danger" role="alert" style="width:300px;">
+            Enter a speech before sending!
+          </div>
+        </center>
       `);
     }
     else {
       rtdb.push(speechesRef, speech);
       $("#speechcontent").val('');
+      $("#err").hide();
     }
   });
 }

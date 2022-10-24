@@ -2,21 +2,30 @@
 
 <head>
 	<meta charset="utf-8">
-	<!--<base href="https://speakyomind-f3358.web.app">-->
 	<title>Speak Yo Mind!</title>
-	<!--<link rel="stylesheet" href="styles.css">-->
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
 		integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+	<!-- FONTS -->	
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@1,500&display=swap" rel="stylesheet">
+	
 	<script src="https://code.jquery.com/jquery-3.4.1.min.js"
 		integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
-	<!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>-->
 </head>
 
-<body>
-	<div id="login" class="p-3 mb-2 bg-primary text-dark">
-		<h1 class="text-center">Speak Yo Mind!</h1>
+<!--<body style="background-color:teal">-->
+<body background="forest.jpg" style="background-position: center; background-repeat: no-repeat; background-attachment: fixed;">
+	<div id="login" class="p-3 mb-2">
+		<h1 class="text-center" style="font-family: 'Raleway', sans-serif; color: white;">Speak Yo Mind!</h1>
 		<div id="topbar" class="d-flex flex-row justify-content-between">
 			<div class="col text-center">
+				<p id="aboutsection" style="font-family: 'Raleway', sans-serif; color: white;">Welcome to SpeakYoMind!<br>
+					This app is a Twitter replica using Javascript and Firebase.<br>
+					Here you can speak freely, and share whatever is on your mind!<br><br>
+					Click below to sign in
+				</p>
 				<button class="btn btn-dark btn-sm" id="gSignIn">Sign in With Google</button>
 			</div>
 			<div class="p-2">
@@ -34,13 +43,13 @@
 			</div>
 		</div>
 		<center>
-			<button class="btn btn-outline-primary btn-sm" id="speak">Speak!</button>
+			<button class="btn btn-success btn-sm" id="speak">Speak!</button>
 		</center>
 	</div>
 
 	<div id="speechfeed">
 		<center>
-			<h2>Speeches</h2>
+			<h2 style="font-family: 'Raleway', sans-serif; color: white;">Speeches</h2>
 			<div id="allspeeches"></div>
 		</center>
 	</div>
